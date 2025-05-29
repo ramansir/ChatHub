@@ -1,3 +1,4 @@
+
 document.addEventListener('DOMContentLoaded', () => {
     const messageInput = document.getElementById('messageInput');
     const sendButton = document.getElementById('sendButton');
@@ -23,27 +24,23 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         socket.onmessage = (event) => {
-            try {
-                const data = JSON.parse(event.data);
+            const data = JSON.parse(event.data);
 
-                switch (data.type) {
-                    case 'userCount':
-                        userCountDisplay.textContent = `${data.count} user${data.count === 1 ? '' : 's'} online`;
-                        break;
-                    case 'status':
-                        handleStatusUpdate(data.message);
-                        break;
-                    case 'chatMessage':
-                        addMessageToChat(data.content, data.sender);
-                        break;
-                    case 'typing':
-                        showTypingIndicator(data.isTyping);
-                        break;
-                    default:
-                        console.log('Unknown message type:', data.type);
-                }
-            } catch (e) {
-                console.error("Error parsing message data:", e, "Raw data:", event.data);
+            switch (data.type) {
+                case 'userCount':
+                    userCountDisplay.textContent = `${data.count} user${data.count === 1 ? '' : 's'} online`;
+                    break;
+                case 'status':
+                    handleStatusUpdate(data.message);
+                    break;
+                case 'chatMessage':
+                    addMessageToChat(data.content, data.sender);
+                    break;
+                case 'typing':
+                    showTypingIndicator(data.isTyping);
+                    break;
+                default:
+                    console.log('Unknown message type:', data.type);
             }
         };
 
@@ -100,7 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const messageElement = document.createElement('div');
         messageElement.classList.add('message-bubble');
         messageElement.classList.add(sender === 'me' ? 'my-message' : 'their-message');
-        messageElement.textContent = message; // Safely sets text content
+        messageElement.textContent = message;
         chatMessages.appendChild(messageElement);
         scrollToBottom();
     }
@@ -129,15 +126,12 @@ document.addEventListener('DOMContentLoaded', () => {
         sendButton.disabled = false;
         disconnectButton.disabled = false;
         messageInput.placeholder = "Type a message...";
-        messageInput.focus(); // Focus input when chat is enabled
     }
 
     function disableChat() {
         messageInput.disabled = true;
         sendButton.disabled = true;
-        // Keep disconnect button enabled if connected to server but not partner?
-        // For now, it's mainly for partner disconnect, so disable if not paired.
-        disconnectButton.disabled = true;
+        disconnectButton.disabled = true; // Keep disconnect enabled if only partner search is off
         messageInput.placeholder = "Waiting for connection...";
         showTypingIndicator(false); // Clear typing indicator
     }
@@ -166,7 +160,6 @@ document.addEventListener('DOMContentLoaded', () => {
             // Stop sending typing indicator
             if (typingTimeout) clearTimeout(typingTimeout);
             socket.send(JSON.stringify({ type: 'typing', isTyping: false }));
-            isCurrentlyTyping = false; // Reset typing state
         }
     }
 
@@ -177,7 +170,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 addSystemMessage('You have disconnected from the chat.');
                 // Status update will come from server to set to 'waiting'
             } else {
-                 console.log("Not connected to a partner, disconnect button does nothing specific yet in this state.");
+                 // If not connected to a partner but to server, this button could cycle connection.
+                 // For now, it primarily works when paired.
+                 console.log("Not connected to a partner, disconnect does nothing client-side yet.");
             }
         }
     });
@@ -191,10 +186,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             clearTimeout(typingTimeout);
             typingTimeout = setTimeout(() => {
-                if(isCurrentlyTyping) { // Only send if still considered typing
-                    socket.send(JSON.stringify({ type: 'typing', isTyping: false }));
-                    isCurrentlyTyping = false;
-                }
+                socket.send(JSON.stringify({ type: 'typing', isTyping: false }));
+                isCurrentlyTyping = false;
             }, 2000); // Send 'not typing' if no input for 2 seconds
         }
     });
