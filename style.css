@@ -21,23 +21,26 @@
     padding: 0;
 }
 
+html {
+    height: 100%; /* Ensure html takes full height */
+}
+
 body {
     font-family: 'Inter', sans-serif;
     background-image: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: var(--text-color);
     display: flex;
     justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    overflow: hidden; /* Prevent body scroll when chat scrolls */
-    padding: 10px;
+    align-items: center; /* Center app-container on desktop */
+    height: 100%; /* Ensure body takes full height */
+    overflow: hidden; /* Prevent body scroll, especially when keyboard is up */
 }
 
 .app-container {
     width: 100%;
     max-width: 800px; /* Desktop max width */
-    height: calc(100vh - 40px); /* Full viewport height minus some padding */
-    max-height: 900px;
+    height: calc(100vh - 40px); /* Desktop: Full viewport height minus some padding (20px top/bottom) */
+    max-height: 900px; /* Desktop max height */
     background: var(--container-bg);
     backdrop-filter: blur(var(--blur-intensity));
     -webkit-backdrop-filter: blur(var(--blur-intensity));
@@ -46,7 +49,7 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.18);
     display: flex;
     flex-direction: column;
-    overflow: hidden; /* Important for fixed input area */
+    overflow: hidden; /* Important for containing children flex items and scroll */
 }
 
 .app-header {
@@ -57,6 +60,7 @@ body {
     justify-content: space-between;
     align-items: center;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    flex-shrink: 0; /* Prevent header from shrinking */
 }
 
 .app-header .logo {
@@ -70,12 +74,11 @@ body {
 }
 
 .chat-window-wrapper {
-    flex-grow: 1;
+    flex-grow: 1; /* Allows this area to take up available vertical space */
     display: flex;
     flex-direction: column;
     overflow-y: auto; /* This will allow messages to scroll */
-    padding: 20px;
-    padding-bottom: calc(20px + 15px + 10px); /* padding + typing indicator height + gap */
+    padding: 20px; /* Uniform padding */
 }
 
 .chat-messages {
@@ -123,7 +126,8 @@ body {
     font-size: 0.9em;
     color: var(--light-text-color);
     opacity: 0.7;
-    margin-top: auto; /* Pushes to bottom if no messages */
+    margin-top: auto; /* Pushes to bottom if no messages, relative to chat-window-wrapper flex */
+    flex-shrink: 0;
 }
 .typing-indicator {
     height: 15px; /* Reserve space */
@@ -133,18 +137,22 @@ body {
     text-align: left;
     padding-left: 5px; /* Align with messages */
     font-style: italic;
+    flex-shrink: 0; /* Prevent shrinking */
+    margin-top: 5px; /* Space above it */
 }
 
 .chat-input-area {
     display: flex;
+    align-items: center; /* Vertically align items in the input area */
     padding: 15px 20px;
     background: rgba(0, 0, 0, 0.2);
     border-top: 1px solid rgba(255, 255, 255, 0.1);
-    /* Fixed position behavior achieved by parent structure and overflow hidden */
+    flex-shrink: 0; /* Prevent input area from shrinking */
 }
 
 #messageInput {
     flex-grow: 1;
+    min-width: 0; /* Crucial fix: Allows input to shrink below its content size if necessary */
     padding: 12px 15px;
     border: none;
     border-radius: var(--border-radius);
@@ -182,6 +190,7 @@ body {
     transition: background-color 0.2s ease, transform 0.1s ease;
     width: 48px; /* Fixed size for round buttons */
     height: 48px;
+    flex-shrink: 0; /* Prevent buttons from shrinking */
 }
 .action-button:hover:not(:disabled) {
     background-color: #0056b3;
@@ -212,18 +221,17 @@ body {
 /* Responsive Adjustments */
 @media (max-width: 768px) {
     body {
-        padding: 0; /* Full screen on mobile */
-        align-items: flex-start; /* Align to top */
+        padding: 0; /* Full screen on mobile, remove desktop padding */
+        align-items: stretch; /* Make app-container stretch to full height of body */
     }
     .app-container {
         max-width: 100%;
-        height: 100vh;
+        height: 100%; /* Take full height of parent (body) */
         border-radius: 0;
-        max-height: none;
+        max-height: none; /* Override desktop max-height */
     }
     .chat-window-wrapper {
-        padding: 15px;
-         padding-bottom: calc(15px + 15px + 10px); /* padding + typing indicator height + gap */
+        padding: 15px; /* Adjust padding for smaller screens */
     }
     .message-bubble {
         max-width: 80%;
@@ -232,7 +240,7 @@ body {
         padding: 10px 15px;
     }
     #messageInput {
-        padding: 10px 12px;
+        padding: 10px 12px; /* Mobile padding for input */
     }
     .action-button {
         width: 44px;
