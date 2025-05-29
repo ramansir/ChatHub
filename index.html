@@ -6,36 +6,34 @@
     <title>Ephemeral Chat</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script> <!-- For icons -->
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script> <!-- For icons (currently unused by custom SVGs) -->
 </head>
 <body>
     <div class="app-container">
         <header class="app-header">
             <div class="logo">EphemeralChat</div>
-            <div id="userCount" class="user-count">0 users online</div>
+            <div id="userCount" class="user-count" aria-live="polite">0 users online</div>
         </header>
 
         <main class="chat-window-wrapper">
-            <div id="chatMessages" class="chat-messages">
+            <div id="chatMessages" class="chat-messages" aria-live="polite">
                 <!-- Messages will appear here -->
             </div>
-            <div id="statusIndicator" class="status-indicator">Connecting to server...</div>
-            <div id="typingIndicator" class="typing-indicator"></div>
+            <div id="statusIndicator" class="status-indicator" aria-live="polite">Connecting to server...</div>
+            <div id="typingIndicator" class="typing-indicator" aria-live="polite"></div>
         </main>
 
         <footer class="chat-input-area">
-            <input type="text" id="messageInput" placeholder="Type a message..." autocomplete="off" disabled>
-            <button id="sendButton" class="action-button send-button" disabled>
+            <input type="text" id="messageInput" placeholder="Type a message..." autocomplete="off" disabled aria-label="Message input">
+            <button id="sendButton" class="action-button send-button" disabled aria-label="Send message">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24"><path d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z" /></svg>
             </button>
-            <button id="disconnectButton" class="action-button disconnect-button" disabled>
+            <button id="disconnectButton" class="action-button disconnect-button" disabled aria-label="Disconnect from chat">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24"><path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm-1.72 6.97a.75.75 0 10-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 101.06 1.06L12 13.06l1.72 1.72a.75.75 0 101.06-1.06L13.06 12l1.72-1.72a.75.75 0 10-1.06-1.06L12 10.94l-1.72-1.72z" clip-rule="evenodd" /></svg>
             </button>
         </footer>
     </div>
 
     <script src="app.js"></script>
-    <script type='text/javascript' src='//luggagesynchronize.com/d9/17/03/d91703073f9b6674fa706a0bdb84632b.js'></script>
-    <script type='text/javascript' src='//luggagesynchronize.com/00/38/7e/00387ee711a1dabdeba70701b7f91dd2.js'></script>
 </body>
 </html>
